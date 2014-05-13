@@ -1,6 +1,6 @@
 Stanbot-5000
 ============
-Code repo for the late, great Stanbot-5000. Putter of words onto random images.
+Code repo for the latest and greatest Stanbot-5000. The source of all his knowledge and power. Stanbot: Putter of words onto random images.
 
 
 FAQ
