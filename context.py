@@ -9,7 +9,7 @@ def get_image(search):
 
 	search = search.replace(' ', '%20')
 	baseURL = 'https://ajax.googleapis.com/ajax/services/search/images?'\
-				'v=1.0&q={}&start=0'.format(search)
+				'v=1.0&q={}&start=0&imgSize=large'.format(search)
 
 	r = requests.get(baseURL)
 	results = simplejson.loads(r.text)
@@ -19,7 +19,7 @@ def get_image(search):
 
 		image_request = requests.get(url)
 
-	except ConnectionError, e:
+	except ConnectionError as e:
 
 		print('\n> Uh-oh! We couldn\'t download {}'.format(url))
 
@@ -28,6 +28,6 @@ def get_image(search):
 
 		image = Image.open(StringIO(image_request.content)).save(title, 'JPEG')
 
-	except IOError, e:
+	except IOError as e:
 
 		print('\n> Uh-oh! We couldn\'t save {}'.format(search))

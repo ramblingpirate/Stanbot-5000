@@ -67,14 +67,14 @@ def theloop(user, r):
 						print('\n> Inbox fainted!')
 						print('====================')
 						print('Letters were junkmail.')
-				except Exception, e:
+				except Exception as e:
 					print('\n> Inbox is poisoned! Inbox fainted.')
 					print('========================================')
 					print('There was an unexpected error while reading the mail:\n{}'.format(e))
 				letter.mark_as_read()
 
 			print('\n> Checking for stanism requests...')
-			comments = r.get_comments('all', limit=500)
+			comments = r.get_comments('all+stanisms', limit=500)
 
 			for comment in comments:
 
@@ -102,6 +102,7 @@ def theloop(user, r):
 def check(comment):
 
 	body = comment.body
+	#print(re.findall(shoutout, body))
 	rquests = set(re.findall(shoutout, body))
 	condition = False
 
