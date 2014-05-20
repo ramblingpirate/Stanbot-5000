@@ -12,7 +12,7 @@ shoutout = re.compile('!stanbot.request')
 
 def boot():
 
-    version = '1.7'
+    version = '1.9'
 
     print('\nStanbot-5000, version: ' + version)
     print('------------------------------')
@@ -92,7 +92,7 @@ def theloop(user, r):
 
                 condition, rquests = check(comment)
                 subreddit = comment.subreddit.display_name
-                #print('\n> now entering Elite Four Trainer: {}'.format(subreddit))
+                # print('\n> now entering Elite Four Trainer: {}'.format(subreddit))
 
                 if condition and comment.id not in cache:
 
@@ -106,10 +106,12 @@ def theloop(user, r):
 
         print('> Stopped Stanbot-5000. Thanks for playing.')
 
-    except:
+    except Exception as e:
         print('\n> Oh no! An error has occured. (Most likely a socket timeout)')
+        print(e)
         print('\nRestarting...')
         theloop(user, r)
+
 
 def check(comment):
 
@@ -124,15 +126,36 @@ def check(comment):
 
     return condition, rquests
 
-def parse_request(quote):
 
-    search_pattern = re.compile(r'\[.*\]')
+def parse_quote(text):
+    thing = text.split(' ')
+    if 'like' in thing:
+        try:
+            index = text.find(' like ')
+            search = text.split(' [')[1].strip(']')
+            temp = text.split(' [')[0]
+            result = [temp[0:index+1], temp[index+1:len(temp)], search]
+            return result
+        except IndexError:
+            return None
 
-    search_term = search_pattern.search(quote).group().strip('[]')
-    top, bottom = quote.split()[:(len(quote.split())+1)/2], quote.split()[(len(quote.split())+1)/2:]
-    top_text, bottom_text = ' '.join(top), ' '.join(bottom).split('[')[0]
-    
-    return search_term, top_text, bottom_text
+    elif 'as' in thing:
+        try:
+            index = text.find(' as ')
+            search = text.split(' [')[1].strip(']')
+            temp = text.split(' [')[0]
+            result = [temp[0:index+1], temp[index+1:len(temp)], search]
+            return result
+        except:
+            return None
+    else:
+        search_p = re.compile(r'\[.*\]')
+        search = search_p.search(text).group().strip('[]')
+        top, bottom = text.split()[:(len(text.split())+1)/2], text.split()[(len(text.split())+1)/2:]
+        top_text, bottom_text = ' '.join(top), ' '.join(bottom).split(' [')[0]
+        result = [top_text, bottom_text, search]
+        return result
+
 
 def post(reddit, comment, rquests, cache):
 
@@ -140,20 +163,21 @@ def post(reddit, comment, rquests, cache):
 
         text = comment.body.split('&gt;')[1].strip(' ').split('\n')[0]
 
-        search, top, bottom = parse_request(text)
+        result = parse_quote(text)
+        top, bottom, search = result[0], result[1], result[2]
         context.get_image(search)
         time.sleep(.5)
         image = 'result_no_text.jpg'
         text_over_image.text_to_image(image, top, bottom)
         imgurlink = text_over_image.upload('result.png', top, search)
-        
+
         with open('betaRequest_reply.txt') as text:
             comment_body = text.read()
 
         place_holder = comment.reply('Processing hyperbolic nanite algorithm...')
         cache.append(comment.id)
         reply_with = comment_body.format(imgurlink, place_holder.id)
-        place_holder.edit(reply_with)   
+        place_holder.edit(reply_with)
 
     return cache
 

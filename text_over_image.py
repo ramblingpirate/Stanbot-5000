@@ -20,8 +20,11 @@ def text_to_image(imagefile, tquote, bquote):
 
     image = Image.open(imagefile)
     draw = ImageDraw.Draw(image)
-
-    tfont = find_size(tquote, image.size[0])
+    if tquote < bquote:
+        tfont = find_size(tquote, image.size[0])
+    else:
+        tfont = find_size(bquote, image.size[0])
+        
     draw.text((image.size[0]*.10-2, 0), tquote, fill='black',
               font=tfont, anchor=image.size[0]/2)
     draw.text((image.size[0]*.10+2, 0), tquote, fill='black',
@@ -33,15 +36,15 @@ def text_to_image(imagefile, tquote, bquote):
     draw.text((image.size[0]*.10, 0), tquote, fill='white',
               font=tfont, anchor=image.size[0]/2)
 
-    draw.text((image.size[0]*.10+2, image.size[1]*.90),
+    draw.text((image.size[0]*.10+2, image.size[1]*.80),
               bquote, fill='black', font=tfont, anchor=image.size[0]/2)
-    draw.text((image.size[0]*.10-2, image.size[1]*.90),
+    draw.text((image.size[0]*.10-2, image.size[1]*.80),
               bquote, fill='black', font=tfont, anchor=image.size[0]/2)
-    draw.text((image.size[0]*.10, image.size[1]*.90-2),
+    draw.text((image.size[0]*.10, image.size[1]*.80-2),
               bquote, fill='black', font=tfont, anchor=image.size[0]/2)
-    draw.text((image.size[0]*.10, image.size[1]*.90+2),
+    draw.text((image.size[0]*.10, image.size[1]*.80+2),
               bquote, fill='black', font=tfont, anchor=image.size[0]/2)
-    draw.text((image.size[0]*.10, image.size[1]*.90),
+    draw.text((image.size[0]*.10, image.size[1]*.80),
               bquote, fill='white', font=tfont, anchor=image.size[0]/2)
 
     image.save('result.png', 'PNG')
