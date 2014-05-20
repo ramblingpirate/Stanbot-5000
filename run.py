@@ -1,7 +1,7 @@
 import praw, getpass, time, re
 import context, text_over_image
 
-shoutout = re.compile('!stanbot.request\n')
+shoutout = re.compile('!stanbot.request')
 
 def boot():
 
@@ -85,7 +85,7 @@ def theloop(user, r):
 				if condition and comment.id not in cache:
 
 					print('\n> Valid stanism request found in /r/{}'.format(subreddit))
-					cache = post(r, comment, rquests, cache)
+					post(r, comment, rquests, cache)
 
 			print('\n> Now Sleeping...')
 			time.sleep(15)
